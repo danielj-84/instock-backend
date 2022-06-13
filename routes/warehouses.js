@@ -33,4 +33,10 @@ router.get("/", (_req, res) => {
   res.status(200).json(warehouses);
 });
 
+//Get a single warehouse from warehouseID
+router.get("/:warehouseId", (req, res) => {
+  let oneWarehouse = getWare().find( warehouse => warehouse.id === req.params.warehouseId);
+  res.status(200).json(oneWarehouse);
+});
+
 module.exports = router;
