@@ -4,7 +4,7 @@ const fs = require("fs");
 
 //get vids from JSON - parse for front-end use
 const getInv = () => {
-    const invList = fs.readFileSync("./data/videos.json");
+    const invList = fs.readFileSync("./data/inventories.json");
     return JSON.parse(invList);
   };
   
