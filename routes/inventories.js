@@ -14,7 +14,7 @@ const addToInv = (updatedInv) => {
   fs.writeFileSync("./data/inventories.json", JSON.stringify(updatedInv));
 };
 
-//get warehouse ID (for POST-new item)
+//get warehouse ID (for POST new inventory item)
 const warehouseID = (props) => {
   let warehouseList = JSON.parse(fs.readFileSync("./data/warehouses.json"));
   const wareId = warehouseList.find(warehouse => warehouse.name === props.warehouseName).id;
@@ -36,12 +36,32 @@ router.post("/", (req, res) => {
     quantity: data.quantity
   };
 
+  //validation
+  if (!data.warehouseName) {
+    return res.status(400).send("Please enter warehouse name");
+  }
+  if (!data.itemName) {
+    return res.status(400).send("Please enter item name");
+  }
+  if (!data.description) {
+    return res.status(400).send("Please enter item description");
+  }
+  if (!data.category) {
+    return res.status(400).send("Please enter item category");
+  }
+  if (!data.status) {
+    return res.status(400).send("Please enter item status");
+  }
+  if (!data.quantity && (data.status.toLowerCase() === "in stock")) {
+    return res.status(400).send("Please enter item quantity");
+  }
+
   let updatedItems = getInv();
   updatedItems.push(newItem);
 
   // addToInv(updatedItems);
 
-  res.status(200).send(newItem);
+  res.status(200).send(`${data.itemName} successfully added to ${data.warehouseName} warehouse`);
 })
 
 module.exports = router;
