@@ -16,36 +16,28 @@ const addToInv = (updatedInv) => {
 
 //GETTING all inventory info from JSON file
 router.get("/", (_req, res) => {
-  let inventory = getInventory().map((inventory) => {
+  let inventory = getInv().map((inventory) => {
     return {
-      
-    "warehouseID": "2922c286-16cd-4d43-ab98-c79f698aeab0",
-    "warehouseName": "Manhattan",
-    "itemName": "Television",
-    "description": "This 50\", 4K LED TV provides a crystal-clear picture and vivid colors.",
-    "category": "Electronics",
-    "status": "In Stock",
-    "quantity": 500
       id: inventory.id,
-      warehouseID: inventory.warehouseID
-      warehouseName: inventory.warehouseName
+      warehouseID: inventory.warehouseID,
+      warehouseName: inventory.warehouseName,
       itemName: inventory.itemName,
       description: inventory.description,
       category: inventory.category,
       status: inventory.status,
-      quantity: inventory.quantity
+      quantity: inventory.quantity,
     };
   });
   res.status(200).json(inventory);
 });
 
-//warehouseId route
+//inventoryID route
 router
   .route("/:inventoryId")
 
   //GETTING a single item
   .get((req, res) => {
-    let oneItem = getInventory().find(
+    let oneItem = getInv().find(
       (inventory) => inventory.id === req.params.inventoryId
     );
     res.status(200).json(oneItem);
@@ -61,6 +53,20 @@ const warehouseID = (props) => {
 };
 
 //DELETING a single item
+router.delete("/:id", (req, res) => {
+  const id = req.params.id;
+  const inventoryData = readWrite.readInventoryData();
+
+  const foundInventory = inventoryData.find((item) => item.id === id);
+
+  if (foundInventory !== undefined) {
+    updatedInventoryData = inventoryData.filter((item) => item.id !== id);
+    readWrite.writeInventoryData(updatedInventoryData);
+    res.status(200).send(`Item ${id} deleted`);
+  } else {
+    res.status(404).send("item not found");
+  }
+});
 
 //POST new inventory item
 router.post("/", (req, res) => {
