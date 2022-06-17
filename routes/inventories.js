@@ -55,14 +55,14 @@ const warehouseID = (props) => {
 //DELETING a single item
 router.delete("/:id", (req, res) => {
   const id = req.params.id;
-  const inventoryData = readWrite.readInventoryData();
+  const inventoryData = getInv();
 
   const foundInventory = inventoryData.find((item) => item.id === id);
 
   if (foundInventory !== undefined) {
     updatedInventoryData = inventoryData.filter((item) => item.id !== id);
-    readWrite.writeInventoryData(updatedInventoryData);
-    res.status(200).send(`Item ${id} deleted`);
+    addToInv(updatedInventoryData);
+    res.status(200).send(`Item ${id} was deleted`);
   } else {
     res.status(404).send("item not found");
   }
