@@ -18,17 +18,9 @@ const addToInv = (updatedInv) => {
 router.get("/", (_req, res) => {
   let inventory = getInventory().map((inventory) => {
     return {
-      
-    "warehouseID": "2922c286-16cd-4d43-ab98-c79f698aeab0",
-    "warehouseName": "Manhattan",
-    "itemName": "Television",
-    "description": "This 50\", 4K LED TV provides a crystal-clear picture and vivid colors.",
-    "category": "Electronics",
-    "status": "In Stock",
-    "quantity": 500
       id: inventory.id,
-      warehouseID: inventory.warehouseID
-      warehouseName: inventory.warehouseName
+      warehouseID: inventory.warehouseID,
+      warehouseName: inventory.warehouseName,
       itemName: inventory.itemName,
       description: inventory.description,
       category: inventory.category,
