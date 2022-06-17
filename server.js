@@ -7,7 +7,7 @@ require("dotenv").config();
 const PORT = process.env.PORT || 8080;
 
 // middelware
-app.use(express.static('public'));
+app.use(express.static("public"));
 app.use(express.json());
 app.use(cors());
 
@@ -20,5 +20,5 @@ app.use("/warehouses", warehousesRoutes);
 
 //server startup
 app.listen(PORT, () => {
-    console.log(`App is running on PORT ${PORT}`)
-})
+  console.log(`App is running on PORT ${PORT}`);
+});
