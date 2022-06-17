@@ -16,7 +16,7 @@ const addToInv = (updatedInv) => {
 
 //GETTING all inventory info from JSON file
 router.get("/", (_req, res) => {
-  let inventory = getInventory().map((inventory) => {
+  let inventory = getInv().map((inventory) => {
     return {
       id: inventory.id,
       warehouseID: inventory.warehouseID,
@@ -25,19 +25,19 @@ router.get("/", (_req, res) => {
       description: inventory.description,
       category: inventory.category,
       status: inventory.status,
-      quantity: inventory.quantity
+      quantity: inventory.quantity,
     };
   });
   res.status(200).json(inventory);
 });
 
-//warehouseId route
+//inventoryID route
 router
   .route("/:inventoryId")
 
   //GETTING a single item
   .get((req, res) => {
-    let oneItem = getInventory().find(
+    let oneItem = getInv().find(
       (inventory) => inventory.id === req.params.inventoryId
     );
     res.status(200).json(oneItem);
@@ -53,6 +53,20 @@ const warehouseID = (props) => {
 };
 
 //DELETING a single item
+router.delete("/:id", (req, res) => {
+  const id = req.params.id;
+  const inventoryData = getInv();
+
+  const foundInventory = inventoryData.find((item) => item.id === id);
+
+  if (foundInventory !== undefined) {
+    updatedInventoryData = inventoryData.filter((item) => item.id !== id);
+    addToInv(updatedInventoryData);
+    res.status(200).send(`Item ${id} was deleted`);
+  } else {
+    res.status(404).send("item not found");
+  }
+});
 
 //POST new inventory item
 router.post("/", (req, res) => {
