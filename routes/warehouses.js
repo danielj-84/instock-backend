@@ -93,6 +93,7 @@ router
       oldData.contact.name = newData.contact.name;
       oldData.contact.position = newData.contact.position;
       oldData.contact.phone = newData.contact.phone;
+      oldData.contact.email = newData.contact.email;
 
       //Replace the old warehouse with the new
       allData.map((warehouse) =>
