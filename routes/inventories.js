@@ -14,6 +14,12 @@ const addToInv = (updatedInv) => {
   fs.writeFileSync("./data/inventories.json", JSON.stringify(updatedInv));
 };
 
+//get list of all warehouses, needed for editing inventory item
+const getWare = () => {
+  const wareList = fs.readFileSync("./data/warehouses.json");
+  return JSON.parse(wareList);
+};
+
 //GETTING all inventory info from JSON file
 router.get("/", (_req, res) => {
   let inventory = getInv().map((inventory) => {
@@ -32,8 +38,7 @@ router.get("/", (_req, res) => {
 });
 
 //inventoryID route
-router
-  .route("/:inventoryId")
+router.route("/:inventoryId")
 
   //GETTING a single item
   .get((req, res) => {
@@ -41,6 +46,35 @@ router
       (inventory) => inventory.id === req.params.inventoryId
     );
     res.status(200).json(oneItem);
+  })
+
+  //edit a single inventory item
+  .put((req, res) => {
+    const newData = req.body;
+    Object.values(newData).forEach((val) => {
+      if(!val){
+        return res.status(422).send("Error: Missing data. Please fill out all required fields");
+      }
+    });
+
+    let allData = getInv();
+
+    const oldData = allData.find((item) => item.id === req.params.inventoryId);
+    oldData.itemName = newData.itemName;
+    oldData.status = newData.status;
+    oldData.quantity = newData.quantity;
+    oldData.warehouseName = newData.warehouseName;
+    oldData.warehouseID = getWare().find(warehouse => warehouse.name === newData.warehouse);
+    oldData.description = newData.description;
+    oldData.category = newData.category;
+
+    allData.map((item) => {
+      item.id === newData.id
+        ? item = newData
+        : item = item
+    });
+    addToInv(allData);
+    res.status(201).json(newData);
   });
 
 //get warehouse ID (for POST new inventory item)

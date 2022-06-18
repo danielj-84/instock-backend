@@ -65,10 +65,9 @@ router
 
     //Validating incoming data
     const newData = req.body;
-    console.log(newData);
     Object.values(newData).forEach((val) => {
       if (!val) {
-        res.status(422).send("Error: Missing data");
+        return res.status(422).send("Error: Missing data. Please fill out all required fields");
       }
     });
 
