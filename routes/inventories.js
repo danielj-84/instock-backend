@@ -31,6 +31,19 @@ router.get("/", (_req, res) => {
   res.status(200).json(inventory);
 });
 
+//warehouse inventory list
+router
+  .route("/:warehouseInventoryId")
+
+    //get all inventory for a given warehouse
+  .get((req, res) => {
+    let warehouseInventory = getInv().filter(
+      (inventory) => inventory.warehouseID === req.params.warehouseInventoryId
+    );
+    res.status(200).json(warehouseInventory);
+  });
+
+  
 //inventoryID route
 router
   .route("/:inventoryId")
@@ -42,6 +55,9 @@ router
     );
     res.status(200).json(oneItem);
   });
+
+
+  
 
 //get warehouse ID (for POST new inventory item)
 const warehouseID = (props) => {
@@ -114,5 +130,6 @@ router.post("/", (req, res) => {
       `${data.itemName} successfully added to ${data.warehouseName} warehouse`
     );
 });
+
 
 module.exports = router;
