@@ -64,6 +64,7 @@ router
     };
 
     //Validating incoming data
+    console.log(req.body);
     const newData = req.body;
     Object.values(newData).forEach((val) => {
       if (!val) {
@@ -83,8 +84,8 @@ router
       let allData = getWare();
 
       //Finding warehouse by ID
-      const oldData = allData.find((warehouse) => warehouse.id === req.body.id);
-
+      const oldData = allData.find((warehouse) => warehouse.id === req.params.warehouseId);
+      console.log(oldData);
       //Changing warehouse details
       oldData.name = newData.name;
       oldData.address = newData.address;
