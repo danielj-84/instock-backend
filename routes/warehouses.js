@@ -40,7 +40,7 @@ router
   //Get a single warehouse
   .get((req, res) => {
     let oneWarehouse = getWare().find(
-      (warehouse) => warehouse.warehouseID === req.params.warehouseId
+      (warehouse) => warehouse.id === req.params.warehouseId
     );
     res.status(200).json(oneWarehouse);
   })
