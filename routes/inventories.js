@@ -81,8 +81,8 @@ router.route("/:inventoryId")
 const warehouseID = (props) => {
   let warehouseList = JSON.parse(fs.readFileSync("./data/warehouses.json"));
   const wareId = warehouseList.find(
-    (warehouse) => warehouse.name === props.warehouseName
-  ).id;
+    (warehouse) => warehouse.name === props.id);
+  
   return wareId;
 };
 
@@ -108,7 +108,7 @@ router.post("/", (req, res) => {
 
   const newItem = {
     id: uuid(),
-    warehouseID: warehouseID(data),
+    warehouseID: warehouseID(data.warehouseName),
     warehouseName: data.warehouseName,
     itemName: data.itemName,
     description: data.description,
@@ -140,7 +140,7 @@ router.post("/", (req, res) => {
   let updatedItems = getInv();
   updatedItems.push(newItem);
 
-  // addToInv(updatedItems);
+  addToInv(updatedItems);
 
   res
     .status(200)
