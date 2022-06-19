@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const fs = require("fs");
+const { v4: uuid } = require("uuid");
 
 //get vids from JSON - parse for front-end use
 const getWare = () => {
@@ -104,6 +105,59 @@ router
       res.status(201).json(newData);
     }
 
+
+  });
+
+//POST new warehouse
+router.post("/", (req, res) => {
+  const data = req.body;
+
+  const newWarehouse = {
+    id: uuid(),
+    name: data.name,
+    address: data.address,
+    city: data.city,
+    country: data.country,
+    contact: {
+      name: data.contact.name,
+      position: data.contact.position,
+      phone: data.contact.phone,
+      email: data.contact.email
+    }
+  };
+
+  //validation
+  if (!data.name) {
+    return res.status(400).send("Please enter a warehouse name");
+  }
+  if (!data.address) {
+    return res.status(400).send("Please enter an address");
+  }
+  if (!data.city) {
+    return res.status(400).send("Please enter a city");
+  }
+  if (!data.country) {
+    return res.status(400).send("Please enter a country");
+  }
+  if (!data.contact.name) {
+    return res.status(400).send("Please enter your name");
+  }
+  if (!data.contact.position) {
+    return res.status(400).send("Please enter your position");
+  }
+  if (!data.contact.phone) {
+    return res.status(400).send("Please enter your phone number");
+  }
+  if (!data.contact.email) {
+    return res.status(400).send("Please enter your email");
+  }
+
+  let updatedWarehouses = getWare();
+  updatedWarehouses.push(newWarehouse);
+
+  addToWare(updatedWarehouses);
+
+  res.status(201).json(newWarehouse);
 
   });
 
