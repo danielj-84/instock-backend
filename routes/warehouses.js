@@ -63,10 +63,11 @@ router
 
     //Validating incoming data
     const newData = req.body;
-    console.log(newData);
     Object.values(newData).forEach((val) => {
       if (!val) {
-        res.status(422).send("Error: Missing data");
+        return res
+          .status(422)
+          .send("Error: Missing data. Please fill out all required fields");
       }
     });
 
@@ -105,8 +106,6 @@ router
   });
 
 //DELETING a single warehouse
-
-///NEED TO UTILIZE DANIEL's VARIABLES ABOVE
 
 const getInv = () => {
   const invList = fs.readFileSync("./data/inventories.json");
