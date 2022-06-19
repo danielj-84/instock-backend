@@ -46,8 +46,6 @@ router
     res.status(200).json(oneWarehouse);
   })
 
-  //DELETING a single warehouse
-
   //Edit a warehouse's data
   .put((req, res) => {
     //Regular Expression for verifying phone and email
@@ -159,6 +157,24 @@ router.post("/", (req, res) => {
 
   res.status(201).json(newWarehouse);
 
+  });
+
+  //DELETING a single warehouse
+  router.delete("/:id", (req, res) => {
+    const id = req.params.id;
+    const warehouseData = getWare();
+  
+    const foundWarehouse = warehouseData.find((item) => item.id === id);
+  
+    if (foundWarehouse !== undefined) {
+      updatedWarehouseData = warehouseData.filter((item) => item.id !== id);
+
+    
+      addToWare(updatedWarehouseData);
+      res.status(200).send(`Warehouse ${id} was deleted`);
+    } else {
+      res.status(404).send("Warehouse not found");
+    }
   });
 
 module.exports = router;
