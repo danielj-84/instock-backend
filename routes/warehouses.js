@@ -122,31 +122,50 @@ const addToInv = (updatedInv) => {
   fs.writeFileSync("./data/inventories.json", JSON.stringify(updatedInv));
 };
 
+// router.delete("/:id", (req, res) => {
+//   const infoWarehouse = getWare();
+//   const infoInventory = invList();
+//   const id = req.params.id;
+//   const warehouse = warehouseScrape(id);
+
+//   if (!warehouse) {
+//     return res.status(404).json({
+//       error: "No Warehouse Found",
+//     });
+//   }
+
+//   let inventoryFiltered = infoInventory.filter(
+//     (item) => item.warehouseID !== id
+//   );
+//   const index = infoWarehouse.findIndex((value) => value.id === id);
+
+//   infoWarehouse.splice(index, 1);
+
+//   addToInv(inventoryFiltered);
+//   addToWare(infoWarehouse);
+
+//   res.status(200).json({
+//     deleted_warehouse: warehouse,
+//   });
+// });
+
 router.delete("/:id", (req, res) => {
-  const infoWarehouse = getWare();
-  const infoInventory = invList();
   const id = req.params.id;
-  const warehouse = warehouseScrape(id);
+  const warehouseData = getWare();
 
-  if (!warehouse) {
-    return res.status(404).json({
-      error: "No Warehouse Found",
-    });
+  console.log(warehouseData);
+
+  const foundWarehouse = warehouseData.find((item) => item.id === id);
+
+  console.log(foundWarehouse);
+
+  if (foundWarehouse !== undefined) {
+    updatedWarehouseData = warehouseData.filter((item) => item.id !== id);
+    addToWare(updatedWarehouseData);
+    res.status(200).send(`Warehouse ${id} was deleted`);
+  } else {
+    res.status(404).send("Warehouse not found");
   }
-
-  let inventoryFiltered = infoInventory.filter(
-    (item) => item.warehouseID !== id
-  );
-  const index = infoWarehouse.findIndex((value) => value.id === id);
-
-  infoWarehouse.splice(index, 1);
-
-  addToInv(inventoryFiltered);
-  addToWare(infoWarehouse);
-
-  res.status(200).json({
-    deleted_warehouse: warehouse,
-  });
 });
 
 module.exports = router;

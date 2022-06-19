@@ -94,7 +94,11 @@ router.delete("/:id", (req, res) => {
   const id = req.params.id;
   const inventoryData = getInv();
 
+  console.log(inventoryData);
+
   const foundInventory = inventoryData.find((item) => item.id === id);
+
+  console.log(foundInventory);
 
   if (foundInventory !== undefined) {
     updatedInventoryData = inventoryData.filter((item) => item.id !== id);
