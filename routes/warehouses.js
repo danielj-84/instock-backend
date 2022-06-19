@@ -8,9 +8,19 @@ const getWare = () => {
   return JSON.parse(wareList);
 };
 
+const getInv = () => {
+  const invList = fs.readFileSync("./data/inventories.json");
+  return JSON.parse(invList);
+};
+
 //write vids to JSON - stringify for back-end storage
 const addToWare = (updatedWare) => {
   fs.writeFileSync("./data/warehouses.json", JSON.stringify(updatedWare));
+};
+
+//write inv to JSON - stringify for back-end storage
+const addToInv = (updatedInv) => {
+  fs.writeFileSync("./data/inventories.json", JSON.stringify(updatedInv));
 };
 
 //GET all warehouse info from JSON file
@@ -45,8 +55,6 @@ router
     res.status(200).json(oneWarehouse);
   })
 
-  //DELETING a single warehouse
-
   //Edit a warehouse's data
   .put((req, res) => {
     //Regular Expression for verifying phone and email
@@ -67,7 +75,9 @@ router
     const newData = req.body;
     Object.values(newData).forEach((val) => {
       if (!val) {
-        return res.status(422).send("Error: Missing data. Please fill out all required fields");
+        return res
+          .status(422)
+          .send("Error: Missing data. Please fill out all required fields");
       }
     });
 
@@ -104,5 +114,38 @@ router
       res.status(201).json(newData);
     }
   });
+
+//DELETING a single warehouse
+
+const warehouseSearch = (id) => {
+  const warehouseData = getWare();
+  const warehouse = warehouseData.find((value) => value.id === id);
+  return warehouse;
+};
+
+router.delete("/:id", (req, res) => {
+  const warehouseData = getWare();
+  const inventoryData = getInv();
+  const id = req.params.id;
+  const warehouse = warehouseSearch(id);
+
+  if (!warehouse) {
+    return res.status(404).json({
+      error: "Warehouse Not Found",
+    });
+  }
+
+  filteredInventory = inventoryData.filter((item) => item.warehouseID !== id);
+  const index = warehouseData.findIndex((value) => value.id === id);
+
+  warehouseData.splice(index, 1);
+
+  addToInv(filteredInventory);
+  addToWare(warehouseData);
+
+  res.status(200).json({
+    deleted_warehouse: warehouse,
+  });
+});
 
 module.exports = router;

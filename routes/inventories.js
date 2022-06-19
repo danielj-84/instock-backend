@@ -38,7 +38,8 @@ router.get("/", (_req, res) => {
 });
 
 //inventoryID route
-router.route("/:inventoryId")
+router
+  .route("/:inventoryId")
 
   //GETTING a single item
   .get((req, res) => {
@@ -52,8 +53,10 @@ router.route("/:inventoryId")
   .put((req, res) => {
     const newData = req.body;
     Object.values(newData).forEach((val) => {
-      if(!val){
-        return res.status(422).send("Error: Missing data. Please fill out all required fields");
+      if (!val) {
+        return res
+          .status(422)
+          .send("Error: Missing data. Please fill out all required fields");
       }
     });
 
@@ -64,14 +67,14 @@ router.route("/:inventoryId")
     oldData.status = newData.status;
     oldData.quantity = newData.quantity;
     oldData.warehouseName = newData.warehouseName;
-    oldData.warehouseID = getWare().find(warehouse => warehouse.name === newData.warehouse);
+    oldData.warehouseID = getWare().find(
+      (warehouse) => warehouse.name === newData.warehouse
+    );
     oldData.description = newData.description;
     oldData.category = newData.category;
 
     allData.map((item) => {
-      item.id === newData.id
-        ? item = newData
-        : item = item
+      item.id === newData.id ? (item = newData) : (item = item);
     });
     addToInv(allData);
     res.status(201).json(newData);
@@ -85,22 +88,6 @@ const warehouseID = (props) => {
   ).id;
   return wareId;
 };
-
-//DELETING a single item
-router.delete("/:id", (req, res) => {
-  const id = req.params.id;
-  const inventoryData = getInv();
-
-  const foundInventory = inventoryData.find((item) => item.id === id);
-
-  if (foundInventory !== undefined) {
-    updatedInventoryData = inventoryData.filter((item) => item.id !== id);
-    addToInv(updatedInventoryData);
-    res.status(200).send(`Item ${id} was deleted`);
-  } else {
-    res.status(404).send("item not found");
-  }
-});
 
 //POST new inventory item
 router.post("/", (req, res) => {
@@ -147,6 +134,22 @@ router.post("/", (req, res) => {
     .send(
       `${data.itemName} successfully added to ${data.warehouseName} warehouse`
     );
+});
+
+//Deleting a Single Item
+router.delete("/:id", (req, res) => {
+  const id = req.params.id;
+  const inventoryData = getInv();
+
+  const foundInventory = inventoryData.find((item) => item.id === id);
+
+  if (foundInventory !== undefined) {
+    updatedInventoryData = inventoryData.filter((item) => item.id !== id);
+    addToInv(updatedInventoryData);
+    res.status(200).send(`Item ${id} deleted`);
+  } else {
+    res.status(404).send("item not found");
+  }
 });
 
 module.exports = router;
