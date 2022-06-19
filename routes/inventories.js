@@ -33,12 +33,12 @@ router.get("/", (_req, res) => {
 
 //warehouse inventory list
 router
-  .route("/:warehouseInventoryId")
+  .route("/warehouseInventory/:warehouseId")
 
     //get all inventory for a given warehouse
   .get((req, res) => {
     let warehouseInventory = getInv().filter(
-      (inventory) => inventory.warehouseID === req.params.warehouseInventoryId
+      (inventory) => inventory.warehouseID === req.params.warehouseId
     );
     res.status(200).json(warehouseInventory);
   });
