@@ -83,7 +83,6 @@ router
 
       //Finding warehouse by ID
       const oldData = allData.find((warehouse) => warehouse.id === req.body.id);
-
       //Changing warehouse details
       oldData.name = newData.name;
       oldData.address = newData.address;
