@@ -13,7 +13,7 @@ app.use(cors());
 
 //routes
 const inventoriesRoutes = require("./routes/inventories");
-app.use("/inventory", inventoriesRoutes);
+app.use("/inventories", inventoriesRoutes);
 
 const warehousesRoutes = require("./routes/warehouses");
 app.use("/warehouses", warehousesRoutes);
