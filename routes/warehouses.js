@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const fs = require("fs");
+const { v4: uuid } = require("uuid");
 
 //get vids from JSON - parse for front-end use
 const getWare = () => {
@@ -78,13 +79,18 @@ router
       res.status(422).send({ Error: "Invalid phone number" });
     }
 
+    if(!newData.contact.name || !newData.contact.position){
+      res.status(422).send("Error: Missing Data");
+    }
+
     //Enter new warehouse details into warehouses.json
     else {
       //Getting all data
       let allData = getWare();
 
       //Finding warehouse by ID
-      const oldData = allData.find((warehouse) => warehouse.id === req.params.warehouseId);
+      const oldData = allData.find((warehouse) => warehouse.id === req.body.id);
+
       //Changing warehouse details
       oldData.name = newData.name;
       oldData.address = newData.address;
@@ -103,6 +109,79 @@ router
       );
       addToWare(allData);
       res.status(201).json(newData);
+    }
+
+
+  });
+
+//POST new warehouse
+router.post("/", (req, res) => {
+  const data = req.body;
+
+  const newWarehouse = {
+    id: uuid(),
+    name: data.name,
+    address: data.address,
+    city: data.city,
+    country: data.country,
+    contact: {
+      name: data.contact.name,
+      position: data.contact.position,
+      phone: data.contact.phone,
+      email: data.contact.email
+    }
+  };
+
+  //validation
+  if (!data.name) {
+    return res.status(400).send("Please enter a warehouse name");
+  }
+  if (!data.address) {
+    return res.status(400).send("Please enter an address");
+  }
+  if (!data.city) {
+    return res.status(400).send("Please enter a city");
+  }
+  if (!data.country) {
+    return res.status(400).send("Please enter a country");
+  }
+  if (!data.contact.name) {
+    return res.status(400).send("Please enter your name");
+  }
+  if (!data.contact.position) {
+    return res.status(400).send("Please enter your position");
+  }
+  if (!data.contact.phone) {
+    return res.status(400).send("Please enter your phone number");
+  }
+  if (!data.contact.email) {
+    return res.status(400).send("Please enter your email");
+  }
+
+  let updatedWarehouses = getWare();
+  updatedWarehouses.push(newWarehouse);
+
+  addToWare(updatedWarehouses);
+
+  res.status(201).json(newWarehouse);
+
+  });
+
+  //DELETING a single warehouse
+  router.delete("/:id", (req, res) => {
+    const id = req.params.id;
+    const warehouseData = getWare();
+  
+    const foundWarehouse = warehouseData.find((item) => item.id === id);
+  
+    if (foundWarehouse !== undefined) {
+      updatedWarehouseData = warehouseData.filter((item) => item.id !== id);
+
+    
+      addToWare(updatedWarehouseData);
+      res.status(200).send(`Warehouse ${id} was deleted`);
+    } else {
+      res.status(404).send("Warehouse not found");
     }
   });
 

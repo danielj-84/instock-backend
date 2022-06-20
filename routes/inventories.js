@@ -37,6 +37,19 @@ router.get("/", (_req, res) => {
   res.status(200).json(inventory);
 });
 
+//warehouse inventory list
+router
+  .route("/warehouseInventory/:warehouseId")
+
+    //get all inventory for a given warehouse
+  .get((req, res) => {
+    let warehouseInventory = getInv().filter(
+      (inventory) => inventory.warehouseID === req.params.warehouseId
+    );
+    res.status(200).json(warehouseInventory);
+  });
+
+  
 //inventoryID route
 router
   .route("/:inventoryId")
@@ -80,12 +93,15 @@ router
     res.status(201).json(newData);
   });
 
+
+  
+
 //get warehouse ID (for POST new inventory item)
 const warehouseID = (props) => {
   let warehouseList = JSON.parse(fs.readFileSync("./data/warehouses.json"));
   const wareId = warehouseList.find(
-    (warehouse) => warehouse.name === props.warehouseName
-  ).id;
+    (warehouse) => warehouse.name === props.id);
+  
   return wareId;
 };
 
@@ -115,7 +131,7 @@ router.post("/", (req, res) => {
 
   const newItem = {
     id: uuid(),
-    warehouseID: warehouseID(data),
+    warehouseID: warehouseID(data.warehouseName),
     warehouseName: data.warehouseName,
     itemName: data.itemName,
     description: data.description,
@@ -147,7 +163,7 @@ router.post("/", (req, res) => {
   let updatedItems = getInv();
   updatedItems.push(newItem);
 
-  // addToInv(updatedItems);
+  addToInv(updatedItems);
 
   res
     .status(200)
@@ -155,5 +171,6 @@ router.post("/", (req, res) => {
       `${data.itemName} successfully added to ${data.warehouseName} warehouse`
     );
 });
+
 
 module.exports = router;
