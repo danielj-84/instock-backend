@@ -76,6 +76,10 @@ router
       res.status(422).send({ Error: "Invalid phone number" });
     }
 
+    if(!newData.contact.name || !newData.contact.position){
+      res.status(422).send("Error: Missing Data");
+    }
+
     //Enter new warehouse details into warehouses.json
     else {
       //Getting all data
