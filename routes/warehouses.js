@@ -76,6 +76,10 @@ router
       res.status(422).send({ Error: "Invalid phone number" });
     }
 
+    if(!newData.contact.name || !newData.contact.position){
+      res.status(422).send("Error: Missing Data");
+    }
+
     //Enter new warehouse details into warehouses.json
     else {
       //Getting all data
@@ -83,7 +87,6 @@ router
 
       //Finding warehouse by ID
       const oldData = allData.find((warehouse) => warehouse.id === req.body.id);
-
       //Changing warehouse details
       oldData.name = newData.name;
       oldData.address = newData.address;
